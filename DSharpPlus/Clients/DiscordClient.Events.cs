@@ -237,6 +237,15 @@ namespace DSharpPlus
         }
         private AsyncEvent<DiscordClient, GuildEmojisUpdateEventArgs> _guildEmojisUpdated;
 
+
+        public event AsyncEventHandler<DiscordClient, GuildStickersUpdateEventArgs> GuildStickersUpdated
+        {
+            add => this._guildStickersUpdated.Register(value);
+            remove => this._guildStickersUpdated.Unregister(value);
+        }
+
+        private AsyncEvent<DiscordClient, GuildStickersUpdateEventArgs> _guildStickersUpdated;
+
         /// <summary>
         /// Fired when a guild integration is updated.
         /// </summary>
@@ -590,6 +599,40 @@ namespace DSharpPlus
             remove => this._applicationCommandDeleted.Unregister(value);
         }
         private AsyncEvent<DiscordClient, ApplicationCommandEventArgs> _applicationCommandDeleted;
+
+        #endregion
+
+        #region Integration
+
+        /// <summary>
+        /// Fired when an integration is created.
+        /// </summary>
+        public event AsyncEventHandler<DiscordClient, IntegrationCreateEventArgs> IntegrationCreated
+        {
+            add => this._integrationCreated.Register(value);
+            remove => this._integrationCreated.Unregister(value);
+        }
+        private AsyncEvent<DiscordClient, IntegrationCreateEventArgs> _integrationCreated;
+
+        /// <summary>
+        /// Fired when an integration is updated.
+        /// </summary>
+        public event AsyncEventHandler<DiscordClient, IntegrationUpdateEventArgs> IntegrationUpdated
+        {
+            add => this._integrationUpdated.Register(value);
+            remove => this._integrationUpdated.Unregister(value);
+        }
+        private AsyncEvent<DiscordClient, IntegrationUpdateEventArgs> _integrationUpdated;
+
+        /// <summary>
+        /// Fired when an integration is deleted.
+        /// </summary>
+        public event AsyncEventHandler<DiscordClient, IntegrationDeleteEventArgs> IntegrationDeleted
+        {
+            add => this._integrationDeleted.Register(value);
+            remove => this._integrationDeleted.Unregister(value);
+        }
+        private AsyncEvent<DiscordClient, IntegrationDeleteEventArgs> _integrationDeleted;
 
         #endregion
 

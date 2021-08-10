@@ -62,6 +62,7 @@ namespace DSharpPlus.Entities
                 this._content = value;
             }
         }
+
         private string _content;
 
         /// <summary>
@@ -73,17 +74,17 @@ namespace DSharpPlus.Entities
         /// <summary>
         /// Files to send on this webhook request.
         /// </summary>
-        public IReadOnlyCollection<DiscordMessageFile> Files => this._files;
+        public IReadOnlyList<DiscordMessageFile> Files => this._files;
         private readonly List<DiscordMessageFile> _files = new();
 
         /// <summary>
         /// Mentions to send on this webhook request.
         /// </summary>
-        public IReadOnlyCollection<IMention> Mentions => this._mentions;
+        public IReadOnlyList<IMention> Mentions => this._mentions;
         private readonly List<IMention> _mentions = new();
 
 
-        public IReadOnlyCollection<DiscordActionRowComponent> Components => this._components;
+        public IReadOnlyList<DiscordActionRowComponent> Components => this._components;
         private readonly List<DiscordActionRowComponent> _components = new();
 
 
@@ -255,7 +256,7 @@ namespace DSharpPlus.Entities
         /// <param name="resetStreamPosition">Tells the API Client to reset the stream position to what it was after the file is sent.</param>
         public DiscordWebhookBuilder AddFiles(Dictionary<string, Stream> files, bool resetStreamPosition = false)
         {
-            if (this.Files.Count() + files.Count() >= 10)
+            if (this.Files.Count() + files.Count() > 10)
                 throw new ArgumentException("Cannot send more than 10 files with a single message.");
 
             foreach (var file in files)
@@ -314,6 +315,12 @@ namespace DSharpPlus.Entities
         /// <param name="messageId">The id of the message to modify.</param>
         /// <returns>The modified message</returns>
         public async Task<DiscordMessage> ModifyAsync(DiscordWebhook webhook, ulong messageId) => await webhook.EditMessageAsync(messageId, this).ConfigureAwait(false);
+
+        /// <summary>
+        /// Clears all message components on this builder.
+        /// </summary>
+        public void ClearComponents()
+            => this._components.Clear();
 
         /// <summary>
         /// Allows for clearing the Webhook Builder so that it can be used again to send a new message.

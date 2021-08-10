@@ -88,7 +88,7 @@ namespace DSharpPlus.Entities
         {
             this._content = builder.Content;
             this._mentions = builder.Mentions;
-            this._embeds.Add(builder.Embed);
+            this._embeds.AddRange(builder.Embeds);
             this._components.AddRange(builder.Components);
         }
 
@@ -208,6 +208,12 @@ namespace DSharpPlus.Entities
             this._mentions.AddRange(mentions);
             return this;
         }
+
+        /// <summary>
+        /// Clears all message components on this builder.
+        /// </summary>
+        public void ClearComponents()
+            => this._components.Clear();
 
         /// <summary>
         /// Allows for clearing the Interaction Response Builder so that it can be used again to send a new response.

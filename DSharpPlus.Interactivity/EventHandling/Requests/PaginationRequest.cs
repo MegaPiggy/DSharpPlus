@@ -40,7 +40,7 @@ namespace DSharpPlus.Interactivity.EventHandling
         private readonly DiscordMessage _message;
         private readonly PaginationEmojis _emojis;
         private readonly DiscordUser _user;
-        private int index = 0;
+        private int _index = 0;
 
         /// <summary>
         /// Creates a new Pagination request
@@ -55,8 +55,8 @@ namespace DSharpPlus.Interactivity.EventHandling
         internal PaginationRequest(DiscordMessage message, DiscordUser user, PaginationBehaviour behaviour, PaginationDeletion deletion,
             PaginationEmojis emojis, TimeSpan timeout, params Page[] pages)
         {
-            this._tcs = new TaskCompletionSource<bool>();
-            this._ct = new CancellationTokenSource(timeout);
+            this._tcs = new();
+            this._ct = new(timeout);
             this._ct.Token.Register(() => this._tcs.TrySetResult(true));
             this._timeout = timeout;
 
@@ -82,21 +82,21 @@ namespace DSharpPlus.Interactivity.EventHandling
         {
             await Task.Yield();
 
-            return this._pages[this.index];
+            return this._pages[this._index];
         }
 
         public async Task SkipLeftAsync()
         {
             await Task.Yield();
 
-            this.index = 0;
+            this._index = 0;
         }
 
         public async Task SkipRightAsync()
         {
             await Task.Yield();
 
-            this.index = this._pages.Count - 1;
+            this._index = this._pages.Count - 1;
         }
 
         public async Task NextPageAsync()
@@ -106,18 +106,18 @@ namespace DSharpPlus.Interactivity.EventHandling
             switch (this._behaviour)
             {
                 case PaginationBehaviour.Ignore:
-                    if (this.index == this._pages.Count - 1)
+                    if (this._index == this._pages.Count - 1)
                         break;
                     else
-                        this.index++;
+                        this._index++;
 
                     break;
 
                 case PaginationBehaviour.WrapAround:
-                    if (this.index == this._pages.Count - 1)
-                        this.index = 0;
+                    if (this._index == this._pages.Count - 1)
+                        this._index = 0;
                     else
-                        this.index++;
+                        this._index++;
 
                     break;
             }
@@ -130,18 +130,18 @@ namespace DSharpPlus.Interactivity.EventHandling
             switch (this._behaviour)
             {
                 case PaginationBehaviour.Ignore:
-                    if (this.index == 0)
+                    if (this._index == 0)
                         break;
                     else
-                        this.index--;
+                        this._index--;
 
                     break;
 
                 case PaginationBehaviour.WrapAround:
-                    if (this.index == 0)
-                        this.index = this._pages.Count - 1;
+                    if (this._index == 0)
+                        this._index = this._pages.Count - 1;
                     else
-                        this.index--;
+                        this._index--;
 
                     break;
             }
@@ -153,6 +153,9 @@ namespace DSharpPlus.Interactivity.EventHandling
 
             return this._emojis;
         }
+
+        public Task<IEnumerable<DiscordButtonComponent>> GetButtonsAsync()
+            => throw new NotSupportedException("This request does not support buttons.");
 
         public async Task<DiscordMessage> GetMessageAsync()
         {

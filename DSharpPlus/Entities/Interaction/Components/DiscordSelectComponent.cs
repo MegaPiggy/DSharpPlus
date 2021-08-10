@@ -21,6 +21,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace DSharpPlus.Entities
@@ -30,37 +33,49 @@ namespace DSharpPlus.Entities
     /// </summary>
     public sealed class DiscordSelectComponent : DiscordComponent
     {
-        [JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
-        internal new ComponentType Type { get; set; } = ComponentType.Select;
-
-        /// <summary>
-        /// The custom Id of this component.
-        /// </summary>
-        [JsonProperty("custom_id", NullValueHandling = NullValueHandling.Ignore)]
-        public new string CustomId { get; set; }
-
         /// <summary>
         /// The options to pick from on this component.
         /// </summary>
         [JsonProperty("options", NullValueHandling = NullValueHandling.Ignore)]
-        public DiscordSelectComponentOption[] Options { get; set; } = Array.Empty<DiscordSelectComponentOption>();
+        public IReadOnlyList<DiscordSelectComponentOption> Options { get; internal set; } = Array.Empty<DiscordSelectComponentOption>();
 
         /// <summary>
         /// The text to show when no option is selected.
         /// </summary>
         [JsonProperty("placeholder", NullValueHandling = NullValueHandling.Ignore)]
-        public string Placeholder { get; set; }
+        public string Placeholder { get; internal set; }
 
         /// <summary>
-        /// The minimum amount of options that can be selected. Must be greater than zero and less than or equal to <see cref="MaximumSelectedValues"/>. Defaults to one.
+        /// Whether this dropdown can be interacted with.
+        /// </summary>
+        [JsonProperty("disabled", NullValueHandling = NullValueHandling.Ignore)]
+        public bool Disabled { get; internal set; }
+
+        /// <summary>
+        /// The minimum amount of options that can be selected. Must be less than or equal to <see cref="MaximumSelectedValues"/>. Defaults to one.
         /// </summary>
         [JsonProperty("min_values", NullValueHandling = NullValueHandling.Ignore)]
-        public int? MinimumSelectedValues { get; set; }
+        public int? MinimumSelectedValues { get; internal set; }
 
         /// <summary>
-        /// The maximum amount of options that can be selected. Must be greater than zero and or equal to <see cref="MinimumSelectedValues"/>. Defaults to 1.
+        /// The maximum amount of options that can be selected. Must be greater than or equal to zero or <see cref="MinimumSelectedValues"/>. Defaults to one.
         /// </summary>
         [JsonProperty("max_values", NullValueHandling = NullValueHandling.Ignore)]
-        public int? MaximumSelectedValues { get; set; }
+        public int? MaximumSelectedValues { get; internal set; }
+
+        internal DiscordSelectComponent()
+        {
+            this.Type = ComponentType.Select;
+        }
+
+        public DiscordSelectComponent(string customId, string placeholder, IEnumerable<DiscordSelectComponentOption> options, bool disabled = false, int minOptions = 1, int maxOptions = 1) : this()
+        {
+            this.CustomId = customId;
+            this.Options = options.ToArray();
+            this.Placeholder = placeholder;
+            this.Disabled = disabled;
+            this.MinimumSelectedValues = minOptions;
+            this.MaximumSelectedValues = maxOptions;
+        }
     }
 }

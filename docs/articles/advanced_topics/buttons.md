@@ -31,13 +31,7 @@ Non-link buttons come in four colors, which are known as styles: Blurple, Grey, 
 How does one construct a button? It's simple, buttons support constructor and object initialization like so:
 
 ```cs
-var myButton = new DiscordButtonComponent()
-{
-    CustomId = "my_very_cool_button",
-    Style = ButtonStyle.Primary,
-    Label = "Very cool button!",
-    Emoji = new DiscordComponentEmoji("😀")
-};
+var myButton = new DiscordButtonComponent(ButtonStyle.Primary, "my_very_cool_button", "Very cool button!", false, new DiscordComponentEmoji("😀"));
 ```
 
 This will create a blurple button with the text that reads "Very cool button!". When a user pushes it, `"my_very_cool_button"` will be sent back as the `Id` property on the event. This is expanded on in the [how to respond to buttons](#responding-to-button-presses).
@@ -61,12 +55,7 @@ builder.WithContent("This message has buttons! Pretty neat innit?");
 Well, there's a builder, but no buttons. What now? Simply make a new button object (`DiscordButtonComponent`) and call `.AddComponents()` on the MessageBuilder.
 
 ```cs
-var myButton = new DiscordButtonComponent
-{
-    CustomId = "my_custom_id",
-    Label = "This is a button!",
-    Style = ButtonStyle.Primary,
-};
+var myButton = new DiscordButtonComponent(ButtonStyle.Primary, "my_custom_id", "This is a button!");
 
 var builder = new DiscordMessageBuilder()
     .WithContent("This message has buttons! Pretty neat innit?")
@@ -109,14 +98,7 @@ Produces a message like such: ![Buttons](/images/advanced_topics_buttons_01.png)
 Well, that's all neat, but lets say you want to add an emoji. Being able to use any emoji is pretty neat, afterall. That's also very simple!
 
 ```cs
-var myButton = new DiscordButtonComponent
-(
-    ButtonStyle.Primary,
-    "emoji_button",
-    null,
-    false,
-    new DiscordComponentEmoji(595381687026843651)
-);
+var myButton = new DiscordButtonComponent(ButtonStyle.Primary, "emoji_button", null, false, new DiscordComponentEmoji(595381687026843651));
 ```
 And you're done! Simply add that to a builder, and when you send, you'll get a message that has a button with a little Pikachu enjoying a lolipop. Adorable. ![PikaLolipop](/images/advanced_topics_buttons_02.png)
 
@@ -127,7 +109,7 @@ When any button is pressed, it will fire the [ComponentInteractionCreated](xref:
 
 In the event args, `Id` will be the id of the button you specified. There's also an `Interaction` property, which contains the interaction the event created. It's important to respond to an interaction within 3 seconds, or it will time out. Responding after this period will throw a `NotFoundException`.
 
-With buttons, there are two new response types: `DefferedMessageUpdate` and `UpdateMessage`.
+With buttons, there are two new response types: `DeferredMessageUpdate` and `UpdateMessage`.
 
 Using `DeferredMessageUpdate` lets you create followup messages via the [followup message builder](xref:DSharpPlus.Entities.DiscordFollowupMessageBuilder). The button will return to being in it's 'dormant' state, or it's 'unpushed' state, if you will.
 
@@ -136,7 +118,7 @@ You have 15 minutes from that point to make followup messages. Responding to tha
 ```cs
 client.ComponentInteractionCreated += async (s, e) =>
 {
-    await e.Interaction.CreateResponseAsync(InteractionResponseType.DefferedMessageUpdate);
+    await e.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
     // Do things.. //
 }
 ```

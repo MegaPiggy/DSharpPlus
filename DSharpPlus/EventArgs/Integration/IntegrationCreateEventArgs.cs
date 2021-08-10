@@ -20,24 +20,24 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace DSharpPlus.Entities
+
+using DSharpPlus.Entities;
+
+namespace DSharpPlus.EventArgs
 {
     /// <summary>
-    /// Represents a type of component.
+    /// Represents arguments for <see cref="DiscordClient.IntegrationCreated"/>
     /// </summary>
-    public enum ComponentType
+    public sealed class IntegrationCreateEventArgs : DiscordEventArgs
     {
         /// <summary>
-        /// A row of components.
+        /// Gets the integration.
         /// </summary>
-        ActionRow = 1,
+        public DiscordIntegration Integration { get; internal set; }
+
         /// <summary>
-        /// A button.
+        /// Gets the guild the integration was added to.
         /// </summary>
-        Button = 2,
-        /// <summary>
-        /// A select menu.
-        /// </summary>
-        Select = 3
+        public DiscordGuild Guild { get; internal set; }
     }
 }
